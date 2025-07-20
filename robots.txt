@@ -3,5 +3,8 @@ User-agent: *
 # 모든 콘텐츠를 수집하도록 허용
 Allow: /
 
-# 사이트맵 파일 위치 명시 (배포 후 실제 URL로 수정 필수)
-Sitemap: [도메인 URL]/sitemap.xml
+# 크롤링 지연 시간 (초 단위)
+Crawl-delay: 1
+
+# 사이트맵 파일 위치 명시
+Sitemap: https://date-calculator-snowy.vercel.app/sitemap.xml
