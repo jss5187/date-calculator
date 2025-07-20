@@ -24,6 +24,7 @@
   --border-radius: 16px;
   --border-radius-sm: 8px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --touch-target: 44px; /* 모바일 터치 타겟 최소 크기 */
 }
 
 * {
@@ -123,6 +124,7 @@ h1 {
   background-position: right 1rem center;
   background-size: 1rem;
   padding-right: 3rem;
+  min-height: var(--touch-target);
 }
 
 .preset-select:focus {
@@ -168,6 +170,7 @@ input[type="date"] {
   transition: var(--transition);
   appearance: none;
   -webkit-appearance: none;
+  min-height: var(--touch-target);
 }
 
 input[type="date"]:focus {
@@ -302,7 +305,7 @@ button:active {
   cursor: pointer;
   transition: var(--transition);
   backdrop-filter: blur(10px);
-  min-height: auto;
+  min-height: var(--touch-target);
 }
 
 .share-btn::before {
@@ -348,67 +351,109 @@ footer {
   animation: fadeInUp 0.6s ease-out;
 }
 
-/* 모바일 최적화 */
+/* 모바일 최적화 - 768px 이하 */
 @media (max-width: 768px) {
+  :root {
+    --touch-target: 50px; /* 모바일에서 더 큰 터치 영역 */
+  }
+
   body {
-    padding: 0.75rem;
+    padding: 1rem 0.75rem;
   }
 
   .container {
     padding: 2rem 1.5rem;
     max-width: 100%;
-    margin: 0.5rem;
+    margin: 0;
+    min-height: auto;
   }
 
   h1 {
     font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .preset-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .preset-select {
+    padding: 1.25rem 1rem;
+    padding-right: 3.5rem;
+    font-size: 1.1rem;
+    min-height: 60px;
+    border-width: 3px;
   }
 
   .date-picker {
     grid-template-columns: 1fr;
-    gap: 1.25rem;
-    margin-bottom: 2rem;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
   }
 
-  input[type="date"],
-  .preset-select {
+  input[type="date"] {
     padding: 1.25rem 1rem;
     font-size: 1.1rem;
-    min-height: 56px;
+    min-height: 60px;
+    border-width: 3px;
   }
 
-  .preset-select {
-    padding-right: 3rem;
+  label {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
   }
 
   button {
     padding: 1.25rem 2rem;
     font-size: 1.2rem;
-    min-height: 60px;
+    min-height: 64px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
   }
 
   .result-box {
-    padding: 1.5rem;
-    font-size: 1rem;
-    min-height: 100px;
+    padding: 2rem 1.5rem;
+    font-size: 1.1rem;
+    min-height: 120px;
+    margin-top: 2.5rem;
   }
 
   .result-box strong {
-    font-size: 1.75rem;
+    font-size: 1.85rem;
   }
 
   .share-buttons {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
+    margin-top: 2rem;
   }
 
   .share-btn {
     flex: none;
     min-width: auto;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    min-height: 54px;
+    font-weight: 600;
   }
 }
 
+/* 모바일 최적화 - 480px 이하 (소형 모바일) */
 @media (max-width: 480px) {
+  :root {
+    --touch-target: 52px; /* 작은 화면에서도 충분한 터치 영역 */
+  }
+
+  body {
+    padding: 0.75rem 0.5rem;
+  }
+
   .container {
     padding: 1.5rem 1rem;
     border-radius: var(--border-radius-sm);
@@ -416,26 +461,90 @@ footer {
 
   h1 {
     font-size: 1.5rem;
+    line-height: 1.2;
   }
 
   .subtitle {
     font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .preset-section {
     margin-bottom: 2rem;
   }
 
-  input[type="date"],
   .preset-select {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
+    padding-right: 3rem;
     font-size: 1rem;
+    min-height: 56px;
+  }
+
+  .date-picker {
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  input[type="date"] {
+    padding: 1rem 0.75rem;
+    font-size: 1rem;
+    min-height: 56px;
+  }
+
+  label {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
   }
 
   button {
     padding: 1rem 1.5rem;
     font-size: 1.1rem;
+    min-height: 56px;
+  }
+
+  .result-box {
+    padding: 1.5rem 1rem;
+    font-size: 1rem;
+    min-height: 100px;
+    margin-top: 2rem;
   }
 
   .result-box strong {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+  }
+
+  .share-buttons {
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .share-btn {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+    min-height: 48px;
+  }
+}
+
+/* 초소형 모바일 (360px 이하) */
+@media (max-width: 360px) {
+  .container {
+    padding: 1.25rem 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  .preset-select,
+  input[type="date"],
+  button {
+    font-size: 0.95rem;
+  }
+
+  .share-btn {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.85rem;
+    min-height: 44px;
   }
 }
 
@@ -450,6 +559,23 @@ footer {
   input[type="date"]:hover,
   .preset-select:hover {
     border-color: var(--border-color);
+  }
+
+  /* 터치 시 더 명확한 피드백 */
+  button:active {
+    background: var(--gradient-secondary);
+    transform: scale(0.98);
+  }
+
+  .share-btn:active {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(0.98);
+  }
+
+  input[type="date"]:focus,
+  .preset-select:focus {
+    border-width: 3px;
+    border-color: var(--primary-color);
   }
 }
 
@@ -484,5 +610,18 @@ footer {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* iOS Safari 특화 */
+@supports (-webkit-touch-callout: none) {
+  input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .preset-select {
+    -webkit-appearance: none;
+    appearance: none;
   }
 }
