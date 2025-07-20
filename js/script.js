@@ -360,12 +360,71 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  function shareKakao() {
-    const text = resultDiv.textContent || "날짜 차이를 계산해보세요!";
-    const url = `https://sharer.kakao.com/talk/friends/?url=${encodeURIComponent(
-      window.location.href
-    )}&text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank", "width=500,height=500");
+  function shareNative() {
+    const resultText = resultDiv.textContent || "날짜 차이를 계산해보세요!";
+    const shareData = {
+      title: "📅 날짜 차이 계산기",
+      text: resultText,
+      url: window.location.href,
+    };
+
+    // Web Share API 지원 확인 (주로 모바일에서 지원)
+    if (navigator.share) {
+      navigator
+        .share(shareData)
+        .then(() => console.log("공유 성공"))
+        .catch((error) => {
+          console.log("공유 취소 또는 실패:", error);
+          // 공유 실패 시 링크 복사로 fallback
+          fallbackShare();
+        });
+    } else {
+      // Web Share API 미지원 시 다른 방법 시도
+      fallbackShare();
+    }
+  }
+
+  function fallbackShare() {
+    const resultText = resultDiv.textContent || "날짜 차이를 계산해보세요!";
+    const shareText = `${resultText}\n\n${window.location.href}`;
+
+    // 클립보드 복사 시도
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(shareText)
+        .then(() => {
+          alert("결과와 링크가 복사되었습니다!\n원하는 곳에 붙여넣기 하세요.");
+        })
+        .catch(() => {
+          // 클립보드 실패 시 수동 복사
+          manualCopy(shareText);
+        });
+    } else {
+      manualCopy(shareText);
+    }
+  }
+
+  function manualCopy(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      document.execCommand("copy");
+      alert("결과와 링크가 복사되었습니다!\n원하는 곳에 붙여넣기 하세요.");
+    } catch (err) {
+      // 모든 복사 방법 실패 시
+      alert(
+        `공유 링크: ${window.location.href}\n\n수동으로 복사해서 공유해주세요!`
+      );
+    }
+
+    document.body.removeChild(textArea);
   }
 
   function saveResult() {
@@ -416,7 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", copyToClipboard);
   document
     .getElementById("shareKakaoBtn")
-    .addEventListener("click", shareKakao);
+    .addEventListener("click", shareNative);
   document
     .getElementById("saveResultBtn")
     .addEventListener("click", saveResult);
