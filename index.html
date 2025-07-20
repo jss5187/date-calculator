@@ -107,13 +107,27 @@
       <h1>📅 날짜 차이 계산기</h1>
       <p class="subtitle">두 날짜를 선택하고 차이를 확인하세요.</p>
 
+      <!-- 프리셋 선택 -->
+      <div class="preset-section">
+        <label for="presetSelect" class="preset-label">계산 유형 선택</label>
+        <select id="presetSelect" class="preset-select">
+          <option value="general">📊 일반 날짜 계산</option>
+          <option value="couple">💕 커플 D-day</option>
+          <option value="baby">👶 아기 관련</option>
+          <option value="military">🎖️ 전역일 계산</option>
+          <option value="exam">📚 시험/입시일</option>
+          <option value="anniversary">🎂 기념일</option>
+          <option value="project">💼 프로젝트 마감</option>
+        </select>
+      </div>
+
       <div class="date-picker">
         <div class="date-input">
-          <label for="startDate">시작일</label>
+          <label for="startDate" id="startLabel">시작일</label>
           <input type="date" id="startDate" />
         </div>
         <div class="date-input">
-          <label for="endDate">종료일</label>
+          <label for="endDate" id="endLabel">종료일</label>
           <input type="date" id="endDate" />
         </div>
       </div>
@@ -121,6 +135,13 @@
       <button id="calculateBtn">계산하기</button>
 
       <div id="result" class="result-box"></div>
+
+      <!-- 공유 버튼들 -->
+      <div id="shareButtons" class="share-buttons" style="display: none">
+        <button id="copyLinkBtn" class="share-btn">🔗 링크 복사</button>
+        <button id="shareKakaoBtn" class="share-btn">💬 카카오톡</button>
+        <button id="saveResultBtn" class="share-btn">💾 결과 저장</button>
+      </div>
     </main>
 
     <footer>

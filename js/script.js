@@ -1,13 +1,216 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // DOM 요소들
+  const presetSelect = document.getElementById("presetSelect");
   const startDateInput = document.getElementById("startDate");
   const endDateInput = document.getElementById("endDate");
+  const startLabel = document.getElementById("startLabel");
+  const endLabel = document.getElementById("endLabel");
   const calculateBtn = document.getElementById("calculateBtn");
   const resultDiv = document.getElementById("result");
+  const shareButtons = document.getElementById("shareButtons");
 
-  // 페이지 로드 시 오늘 날짜로 기본값 설정
+  // 프리셋 설정
+  const presets = {
+    general: {
+      startLabel: "시작일",
+      endLabel: "종료일",
+      buttonText: "계산하기",
+      getMessage: (days, isPositive) => {
+        if (days === 0)
+          return {
+            icon: "🎯",
+            text: "두 날짜는 <strong>같은 날</strong>입니다!",
+          };
+        if (isPositive)
+          return {
+            icon: "📊",
+            text: `두 날짜의 차이는 <strong>${days}</strong>일 입니다`,
+          };
+        return {
+          icon: "⏰",
+          text: `시작일로부터 <strong>${Math.abs(days)}</strong>일 전입니다`,
+        };
+      },
+    },
+    couple: {
+      startLabel: "사귀기 시작한 날",
+      endLabel: "계산할 날짜",
+      buttonText: "사랑의 날수 계산하기 💕",
+      getMessage: (days, isPositive) => {
+        if (days === 0)
+          return {
+            icon: "💕",
+            text: "오늘이 바로 <strong>시작한 날</strong>이에요!",
+          };
+        if (isPositive) {
+          let milestone = checkCoupleMilestone(days);
+          return {
+            icon: "💕",
+            text: `사귄 지 <strong>${days}</strong>일째예요!${
+              milestone
+                ? `<br/><span class="special-milestone">🎉 ${milestone}!</span>`
+                : ""
+            }`,
+          };
+        }
+        return { icon: "💔", text: "아직 사귀기 전이네요!" };
+      },
+    },
+    baby: {
+      startLabel: "아기 태어난 날",
+      endLabel: "계산할 날짜",
+      buttonText: "아기 성장일수 계산하기 👶",
+      getMessage: (days, isPositive) => {
+        if (days === 0)
+          return {
+            icon: "🎉",
+            text: "오늘이 바로 <strong>출생일</strong>이에요!",
+          };
+        if (isPositive) {
+          let milestone = checkBabyMilestone(days);
+          return {
+            icon: "👶",
+            text: `아기가 태어난 지 <strong>${days}</strong>일째예요!${
+              milestone
+                ? `<br/><span class="special-milestone">🎉 ${milestone}!</span>`
+                : ""
+            }`,
+          };
+        }
+        return {
+          icon: "🤰",
+          text: `출산까지 <strong>${Math.abs(days)}</strong>일 남았어요!`,
+        };
+      },
+    },
+    military: {
+      startLabel: "입대한 날",
+      endLabel: "전역 예정일",
+      buttonText: "전역까지 계산하기 🎖️",
+      getMessage: (days, isPositive) => {
+        if (days === 0)
+          return {
+            icon: "🎉",
+            text: "오늘이 바로 <strong>전역일</strong>입니다!",
+          };
+        if (isPositive)
+          return {
+            icon: "🎖️",
+            text: `전역까지 <strong>${days}</strong>일 남았습니다!`,
+          };
+        return {
+          icon: "👨‍✈️",
+          text: `전역한 지 <strong>${Math.abs(days)}</strong>일 지났습니다!`,
+        };
+      },
+    },
+    exam: {
+      startLabel: "오늘 날짜",
+      endLabel: "시험 날짜",
+      buttonText: "D-day 계산하기 📚",
+      getMessage: (days, isPositive) => {
+        if (days === 0)
+          return {
+            icon: "🔥",
+            text: "오늘이 바로 <strong>시험날</strong>입니다!",
+          };
+        if (isPositive)
+          return {
+            icon: "📚",
+            text: `시험까지 <strong>${days}</strong>일 남았습니다!`,
+          };
+        return {
+          icon: "😅",
+          text: `시험이 <strong>${Math.abs(days)}</strong>일 전에 끝났네요!`,
+        };
+      },
+    },
+    anniversary: {
+      startLabel: "기념일",
+      endLabel: "계산할 날짜",
+      buttonText: "기념일 계산하기 🎂",
+      getMessage: (days, isPositive) => {
+        if (days === 0)
+          return {
+            icon: "🎉",
+            text: "오늘이 바로 <strong>기념일</strong>이에요!",
+          };
+        if (isPositive)
+          return {
+            icon: "🎂",
+            text: `기념일로부터 <strong>${days}</strong>일 지났어요!`,
+          };
+        return {
+          icon: "⏰",
+          text: `기념일까지 <strong>${Math.abs(days)}</strong>일 남았어요!`,
+        };
+      },
+    },
+    project: {
+      startLabel: "프로젝트 시작일",
+      endLabel: "마감일",
+      buttonText: "마감까지 계산하기 💼",
+      getMessage: (days, isPositive) => {
+        if (days === 0)
+          return {
+            icon: "🔥",
+            text: "오늘이 바로 <strong>마감일</strong>입니다!",
+          };
+        if (isPositive)
+          return {
+            icon: "💼",
+            text: `마감까지 <strong>${days}</strong>일 남았습니다!`,
+          };
+        return {
+          icon: "⏰",
+          text: `마감일이 <strong>${Math.abs(days)}</strong>일 지났습니다!`,
+        };
+      },
+    },
+  };
+
+  // 커플 마일스톤 체크
+  function checkCoupleMilestone(days) {
+    const milestones = {
+      100: "100일",
+      200: "200일",
+      365: "1주년",
+      500: "500일",
+      730: "2주년",
+      1000: "1000일",
+      1095: "3주년",
+      1460: "4주년",
+      1825: "5주년",
+    };
+    return milestones[days] || null;
+  }
+
+  // 아기 마일스톤 체크
+  function checkBabyMilestone(days) {
+    const milestones = {
+      100: "백일",
+      365: "돌",
+      730: "두 돌",
+    };
+    return milestones[days] || null;
+  }
+
+  // 페이지 로드 시 초기 설정
   const today = new Date().toISOString().split("T")[0];
   startDateInput.value = today;
   endDateInput.value = today;
+
+  // 프리셋 변경 시 UI 업데이트
+  presetSelect.addEventListener("change", () => {
+    const selectedPreset = presets[presetSelect.value];
+    startLabel.textContent = selectedPreset.startLabel;
+    endLabel.textContent = selectedPreset.endLabel;
+    calculateBtn.textContent = selectedPreset.buttonText;
+
+    // 결과 초기화
+    showResult("📅 날짜를 선택하고 계산해보세요!");
+    shareButtons.style.display = "none";
+  });
 
   // 버튼 상태 관리
   function setButtonLoading(isLoading) {
@@ -16,7 +219,8 @@ document.addEventListener("DOMContentLoaded", () => {
       calculateBtn.disabled = true;
       calculateBtn.style.opacity = "0.7";
     } else {
-      calculateBtn.textContent = "계산하기";
+      const preset = presets[presetSelect.value];
+      calculateBtn.textContent = preset.buttonText;
       calculateBtn.disabled = false;
       calculateBtn.style.opacity = "1";
     }
@@ -31,24 +235,54 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 150);
   }
 
-  // 날짜 차이 계산 및 상세 정보 제공
+  // 추가 정보 생성 (주, 월, 년 단위)
+  function getAdditionalInfo(days) {
+    if (Math.abs(days) < 7) return "";
+
+    const absDays = Math.abs(days);
+    const weeks = Math.floor(absDays / 7);
+    const months = Math.floor(absDays / 30);
+    const years = Math.floor(absDays / 365);
+
+    let info =
+      '<div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-light);">';
+
+    if (years > 0) {
+      info += `약 ${years}년 `;
+    }
+    if (months > 0 && years === 0) {
+      info += `${months}개월 `;
+    }
+    if (weeks > 0 && months === 0) {
+      info += `${weeks}주 `;
+      const remainingDays = absDays % 7;
+      if (remainingDays > 0) {
+        info += `${remainingDays}일 `;
+      }
+    }
+
+    info += "</div>";
+    return info;
+  }
+
+  // 날짜 차이 계산
   function calculateDateDifference() {
     const startDate = startDateInput.value;
     const endDate = endDateInput.value;
 
     if (!startDate || !endDate) {
-      showResult("📅 시작일과 종료일을 모두 선택해주세요.");
+      showResult("📅 날짜를 모두 선택해주세요!");
+      shareButtons.style.display = "none";
       return;
     }
 
     setButtonLoading(true);
 
-    // 실제 계산 시뮬레이션을 위한 약간의 지연
     setTimeout(() => {
       const date1 = new Date(startDate);
       const date2 = new Date(endDate);
 
-      // UTC 기준으로 변환하여 시간대 문제 방지
+      // UTC 기준으로 변환
       const utc1 = Date.UTC(
         date1.getFullYear(),
         date1.getMonth(),
@@ -63,70 +297,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const diffTime = utc2 - utc1;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      let resultMessage = "";
+      const selectedPreset = presets[presetSelect.value];
+      const result = selectedPreset.getMessage(diffDays, diffDays >= 0);
+      const additionalInfo = getAdditionalInfo(diffDays);
 
-      if (diffDays === 0) {
-        resultMessage = `
-                    <div style="font-size: 1.5rem;">🎯</div>
-                    <div style="margin-top: 0.5rem;">두 날짜는 <strong>같은 날</strong>입니다!</div>
-                `;
-      } else if (diffDays > 0) {
-        const weeks = Math.floor(diffDays / 7);
-        const remainingDays = diffDays % 7;
-        const months = Math.floor(diffDays / 30);
-        const years = Math.floor(diffDays / 365);
-
-        let additionalInfo = "";
-        if (diffDays >= 7) {
-          additionalInfo = `<div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-light);">`;
-          if (years > 0) {
-            additionalInfo += `약 ${years}년 `;
-          }
-          if (months > 0) {
-            additionalInfo += `${months}개월 `;
-          }
-          if (weeks > 0) {
-            additionalInfo += `${weeks}주`;
-            if (remainingDays > 0) {
-              additionalInfo += ` ${remainingDays}일`;
-            }
-          }
-          additionalInfo += `</div>`;
-        }
-
-        resultMessage = `
-                    <div style="font-size: 1.5rem;">📊</div>
-                    <div style="margin-top: 0.5rem;">두 날짜의 차이는 <strong>${diffDays}</strong>일 입니다</div>
-                    ${additionalInfo}
-                `;
-      } else {
-        const absDays = Math.abs(diffDays);
-        const weeks = Math.floor(absDays / 7);
-        const remainingDays = absDays % 7;
-
-        let additionalInfo = "";
-        if (absDays >= 7) {
-          additionalInfo = `<div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-light);">`;
-          if (weeks > 0) {
-            additionalInfo += `${weeks}주`;
-            if (remainingDays > 0) {
-              additionalInfo += ` ${remainingDays}일`;
-            }
-          }
-          additionalInfo += ` 전</div>`;
-        }
-
-        resultMessage = `
-                    <div style="font-size: 1.5rem;">⏰</div>
-                    <div style="margin-top: 0.5rem;">시작일로부터 <strong>${absDays}</strong>일 전입니다</div>
-                    ${additionalInfo}
-                `;
-      }
+      const resultMessage = `
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${result.icon}</div>
+                <div style="margin-bottom: 0.5rem;">${result.text}</div>
+                ${additionalInfo}
+            `;
 
       showResult(resultMessage);
       setButtonLoading(false);
 
-      // 결과가 표시되면 부드럽게 스크롤
+      // 공유 버튼 표시
+      if (diffDays !== null) {
+        shareButtons.style.display = "flex";
+      }
+
+      // 모바일에서 스크롤
       if (window.innerWidth <= 768) {
         setTimeout(() => {
           resultDiv.scrollIntoView({
@@ -138,10 +327,68 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   }
 
-  // 계산 버튼 클릭 이벤트
+  // 공유 기능들
+  function copyToClipboard() {
+    const url = window.location.href;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert("링크가 복사되었습니다!");
+      })
+      .catch(() => {
+        // 복사 실패 시 fallback
+        const textArea = document.createElement("textarea");
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        alert("링크가 복사되었습니다!");
+      });
+  }
+
+  function shareKakao() {
+    const text = resultDiv.textContent || "날짜 차이를 계산해보세요!";
+    const url = `https://sharer.kakao.com/talk/friends/?url=${encodeURIComponent(
+      window.location.href
+    )}&text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank", "width=500,height=500");
+  }
+
+  function saveResult() {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 400;
+    canvas.height = 300;
+
+    // 배경 그라데이션
+    const gradient = ctx.createLinearGradient(0, 0, 400, 300);
+    gradient.addColorStop(0, "#667eea");
+    gradient.addColorStop(1, "#764ba2");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 400, 300);
+
+    // 텍스트
+    ctx.fillStyle = "white";
+    ctx.font = "bold 24px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("날짜 차이 계산기", 200, 50);
+
+    ctx.font = "18px Arial";
+    const resultText = resultDiv.textContent || "결과가 없습니다";
+    ctx.fillText(resultText, 200, 150);
+
+    // 다운로드
+    const link = document.createElement("a");
+    link.download = "date-calculator-result.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  }
+
+  // 이벤트 리스너들
   calculateBtn.addEventListener("click", calculateDateDifference);
 
-  // Enter 키로도 계산할 수 있도록
+  // Enter 키 지원
   [startDateInput, endDateInput].forEach((input) => {
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
@@ -150,24 +397,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 날짜 입력 시 실시간 유효성 검사
-  startDateInput.addEventListener("change", () => {
-    if (startDateInput.value && endDateInput.value) {
-      // 자동 계산 옵션 (선택사항)
-      // calculateDateDifference();
-    }
-  });
+  // 공유 버튼 이벤트
+  document
+    .getElementById("copyLinkBtn")
+    .addEventListener("click", copyToClipboard);
+  document
+    .getElementById("shareKakaoBtn")
+    .addEventListener("click", shareKakao);
+  document
+    .getElementById("saveResultBtn")
+    .addEventListener("click", saveResult);
 
-  endDateInput.addEventListener("change", () => {
-    if (startDateInput.value && endDateInput.value) {
-      // 자동 계산 옵션 (선택사항)
-      // calculateDateDifference();
-    }
-  });
-
-  // 모바일에서 날짜 선택기 개선을 위한 터치 이벤트
+  // 모바일 터치 효과
   if ("ontouchstart" in window) {
-    [startDateInput, endDateInput].forEach((input) => {
+    [startDateInput, endDateInput, presetSelect].forEach((input) => {
       input.addEventListener("touchstart", () => {
         input.style.transform = "scale(0.98)";
       });
@@ -180,8 +423,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 페이지 로드 시 첫 계산 실행 (같은 날짜이므로 데모 효과)
+  // 초기 설정 적용
+  presetSelect.dispatchEvent(new Event("change"));
+
+  // 초기 메시지 표시
   setTimeout(() => {
-    showResult("📅 시작일과 종료일을 선택하고 계산해보세요!");
+    showResult("📅 계산 유형을 선택하고 날짜를 입력해보세요!");
   }, 500);
 });

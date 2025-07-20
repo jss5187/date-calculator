@@ -55,7 +55,7 @@ body {
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-xl);
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
@@ -89,6 +89,50 @@ h1 {
   margin-bottom: 2.5rem;
   font-size: 1rem;
   font-weight: 400;
+}
+
+/* 프리셋 선택 섹션 */
+.preset-section {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.preset-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+.preset-select {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--card-bg-color);
+  color: var(--text-color);
+  transition: var(--transition);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 3rem;
+}
+
+.preset-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.preset-select:hover {
+  border-color: var(--primary-color);
 }
 
 .date-picker {
@@ -226,6 +270,51 @@ button:active {
   margin: 0 0.25rem;
 }
 
+/* 특별한 날 하이라이트 */
+.special-milestone {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* 공유 버튼들 */
+.share-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.5s ease-out 0.2s both;
+}
+
+.share-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+  min-height: auto;
+}
+
+.share-btn::before {
+  display: none;
+}
+
+.share-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
 footer {
   margin-top: 2rem;
   color: rgba(255, 255, 255, 0.8);
@@ -281,10 +370,15 @@ footer {
     margin-bottom: 2rem;
   }
 
-  input[type="date"] {
+  input[type="date"],
+  .preset-select {
     padding: 1.25rem 1rem;
     font-size: 1.1rem;
     min-height: 56px;
+  }
+
+  .preset-select {
+    padding-right: 3rem;
   }
 
   button {
@@ -301,6 +395,16 @@ footer {
 
   .result-box strong {
     font-size: 1.75rem;
+  }
+
+  .share-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .share-btn {
+    flex: none;
+    min-width: auto;
   }
 }
 
@@ -319,7 +423,8 @@ footer {
     margin-bottom: 2rem;
   }
 
-  input[type="date"] {
+  input[type="date"],
+  .preset-select {
     padding: 1rem;
     font-size: 1rem;
   }
@@ -336,12 +441,14 @@ footer {
 
 /* 터치 디바이스 최적화 */
 @media (hover: none) and (pointer: coarse) {
-  button:hover {
+  button:hover,
+  .share-btn:hover {
     transform: none;
     box-shadow: var(--shadow-md);
   }
 
-  input[type="date"]:hover {
+  input[type="date"]:hover,
+  .preset-select:hover {
     border-color: var(--border-color);
   }
 }
@@ -358,6 +465,16 @@ footer {
 
   footer {
     color: rgba(255, 255, 255, 0.6);
+  }
+
+  .share-btn {
+    background: rgba(45, 55, 72, 0.9);
+    color: var(--text-color);
+    border-color: var(--border-color);
+  }
+
+  .share-btn:hover {
+    background: rgba(45, 55, 72, 1);
   }
 }
 
