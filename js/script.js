@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startLabel: "시작일",
       endLabel: "종료일",
       buttonText: "계산하기",
+      calculateDays: (rawDays) => rawDays, // 일반 계산은 그대로
       getMessage: (days, isPositive) => {
         if (days === 0)
           return {
@@ -36,11 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
       startLabel: "사귀기 시작한 날",
       endLabel: "계산할 날짜",
       buttonText: "사랑의 날수 계산하기 💕",
+      calculateDays: (rawDays) => (rawDays >= 0 ? rawDays + 1 : rawDays), // 시작한 날부터 1일째
       getMessage: (days, isPositive) => {
-        if (days === 0)
+        if (days === 1)
           return {
             icon: "💕",
-            text: "오늘이 바로 <strong>시작한 날</strong>이에요!",
+            text: "오늘이 바로 <strong>사귄 첫날</strong>이에요!",
           };
         if (isPositive) {
           let milestone = checkCoupleMilestone(days);
@@ -60,11 +62,12 @@ document.addEventListener("DOMContentLoaded", () => {
       startLabel: "아기 태어난 날",
       endLabel: "계산할 날짜",
       buttonText: "아기 성장일수 계산하기 👶",
+      calculateDays: (rawDays) => (rawDays >= 0 ? rawDays + 1 : rawDays), // 태어난 날부터 1일째
       getMessage: (days, isPositive) => {
-        if (days === 0)
+        if (days === 1)
           return {
             icon: "🎉",
-            text: "오늘이 바로 <strong>출생일</strong>이에요!",
+            text: "오늘이 바로 <strong>출생 첫날</strong>이에요!",
           };
         if (isPositive) {
           let milestone = checkBabyMilestone(days);
@@ -87,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startLabel: "입대한 날",
       endLabel: "전역 예정일",
       buttonText: "전역까지 계산하기 🎖️",
+      calculateDays: (rawDays) => rawDays, // 일반 계산
       getMessage: (days, isPositive) => {
         if (days === 0)
           return {
@@ -108,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startLabel: "오늘 날짜",
       endLabel: "시험 날짜",
       buttonText: "D-day 계산하기 📚",
+      calculateDays: (rawDays) => rawDays, // 일반 계산
       getMessage: (days, isPositive) => {
         if (days === 0)
           return {
@@ -129,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startLabel: "기념일",
       endLabel: "계산할 날짜",
       buttonText: "기념일 계산하기 🎂",
+      calculateDays: (rawDays) => rawDays, // 일반 계산
       getMessage: (days, isPositive) => {
         if (days === 0)
           return {
@@ -150,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startLabel: "프로젝트 시작일",
       endLabel: "마감일",
       buttonText: "마감까지 계산하기 💼",
+      calculateDays: (rawDays) => rawDays, // 일반 계산
       getMessage: (days, isPositive) => {
         if (days === 0)
           return {
@@ -169,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
-  // 커플 마일스톤 체크
+  // 커플 마일스톤 체크 (1일째부터 시작하므로 기존 값 유지)
   function checkCoupleMilestone(days) {
     const milestones = {
       100: "100일",
@@ -185,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return milestones[days] || null;
   }
 
-  // 아기 마일스톤 체크
+  // 아기 마일스톤 체크 (1일째부터 시작하므로 기존 값 유지)
   function checkBabyMilestone(days) {
     const milestones = {
       100: "백일",
@@ -295,11 +302,17 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       const diffTime = utc2 - utc1;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const rawDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
       const selectedPreset = presets[presetSelect.value];
-      const result = selectedPreset.getMessage(diffDays, diffDays >= 0);
-      const additionalInfo = getAdditionalInfo(diffDays);
+      // 프리셋별 계산 방식 적용
+      const calculatedDays = selectedPreset.calculateDays(rawDays);
+
+      const result = selectedPreset.getMessage(
+        calculatedDays,
+        calculatedDays >= 0
+      );
+      const additionalInfo = getAdditionalInfo(calculatedDays);
 
       const resultMessage = `
                 <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${result.icon}</div>
@@ -311,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setButtonLoading(false);
 
       // 공유 버튼 표시
-      if (diffDays !== null) {
+      if (calculatedDays !== null) {
         shareButtons.style.display = "flex";
       }
 
