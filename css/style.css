@@ -9,13 +9,13 @@
   --gradient-background: linear-gradient(
     135deg,
     #667eea 0%,
-    #764ba2 50%,
+    #764ba2 30%,
     #f093fb 100%
   );
-  --background-color: #f8fafc;
+  --background-color: #ffffff;
   --text-color: #2d3748;
   --text-light: #718096;
-  --card-bg-color: #ffffff;
+  --card-bg-color: rgba(255, 255, 255, 0.95);
   --border-color: #e2e8f0;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -83,6 +83,51 @@ h1 {
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.025em;
+}
+
+/* 헤더 섹션 */
+.header-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+/* 다크모드 토글 버튼 */
+.theme-toggle {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-icon {
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+
+/* 다크모드가 활성화되었을 때 아이콘 회전 */
+body.dark-mode .theme-icon {
+  transform: rotate(180deg);
 }
 
 .subtitle {
@@ -373,6 +418,17 @@ footer {
     margin-bottom: 0.75rem;
   }
 
+  .header-section {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
   .subtitle {
     font-size: 1rem;
     margin-bottom: 2rem;
@@ -579,7 +635,54 @@ footer {
   }
 }
 
-/* 다크모드 지원 준비 */
+/* 수동 다크모드 */
+body.dark-mode {
+  --primary-color: #a78bfa;
+  --secondary-color: #c084fc;
+  --accent-color: #fbbf24;
+  --gradient-primary: linear-gradient(135deg, #a78bfa 0%, #c084fc 100%);
+  --gradient-secondary: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --gradient-background: linear-gradient(
+    135deg,
+    #111827 0%,
+    #1f2937 30%,
+    #374151 100%
+  );
+  --background-color: #111827;
+  --text-color: #f9fafb;
+  --text-light: #9ca3af;
+  --card-bg-color: rgba(31, 41, 55, 0.8);
+  --border-color: #374151;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode footer {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .share-btn {
+  background: rgba(31, 41, 55, 0.9);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .share-btn:hover {
+  background: rgba(31, 41, 55, 1);
+}
+
+body.dark-mode .theme-toggle {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: var(--border-color);
+}
+
+body.dark-mode .theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 시스템 다크모드 지원 (fallback) */
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: #1a202c;
@@ -587,6 +690,12 @@ footer {
     --text-light: #a0aec0;
     --card-bg-color: rgba(45, 55, 72, 0.8);
     --border-color: #4a5568;
+    --gradient-background: linear-gradient(
+      135deg,
+      #2d3748 0%,
+      #4a5568 50%,
+      #2d3748 100%
+    );
   }
 
   footer {
@@ -601,6 +710,15 @@ footer {
 
   .share-btn:hover {
     background: rgba(45, 55, 72, 1);
+  }
+
+  .theme-toggle {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--border-color);
+  }
+
+  .theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.3);
   }
 }
 

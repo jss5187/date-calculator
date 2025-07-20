@@ -8,6 +8,68 @@ document.addEventListener("DOMContentLoaded", () => {
   const calculateBtn = document.getElementById("calculateBtn");
   const resultDiv = document.getElementById("result");
   const shareButtons = document.getElementById("shareButtons");
+  const themeToggle = document.getElementById("themeToggle");
+  const themeIcon = document.querySelector(".theme-icon");
+
+  // 다크모드 관리
+  function initTheme() {
+    // localStorage에서 저장된 테마 확인
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+
+    // 저장된 테마가 있으면 우선, 없으면 시스템 설정 따라감
+    const isDark = savedTheme ? savedTheme === "dark" : systemPrefersDark;
+
+    applyTheme(isDark);
+  }
+
+  function applyTheme(isDark) {
+    console.log("테마 적용:", isDark ? "dark" : "light");
+    if (isDark) {
+      document.body.classList.add("dark-mode");
+      themeIcon.textContent = "☀️";
+      console.log("다크모드 클래스 추가됨");
+    } else {
+      document.body.classList.remove("dark-mode");
+      themeIcon.textContent = "🌙";
+      console.log("라이트모드로 변경됨");
+    }
+  }
+
+  function toggleTheme() {
+    const isDark = document.body.classList.contains("dark-mode");
+    const newTheme = !isDark;
+
+    applyTheme(newTheme);
+
+    // localStorage에 저장
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
+
+    // 버튼 애니메이션
+    themeToggle.style.transform = "scale(0.9)";
+    setTimeout(() => {
+      themeToggle.style.transform = "scale(1)";
+    }, 150);
+  }
+
+  // 테마 토글 이벤트
+  themeToggle.addEventListener("click", toggleTheme);
+
+  // 시스템 테마 변경 감지
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (e) => {
+      // 수동 설정이 없을 때만 시스템 설정 따라감
+      const savedTheme = localStorage.getItem("theme");
+      if (!savedTheme) {
+        applyTheme(e.matches);
+      }
+    });
+
+  // 초기 테마 설정
+  initTheme();
 
   // 프리셋 설정
   const presets = {
