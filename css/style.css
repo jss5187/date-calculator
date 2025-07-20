@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #5e72e4;
+    --background-color: #f8f9fe;
+    --text-color: #32325d;
+    --card-bg-color: #ffffff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: var(--card-bg-color);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+h1 {
+    color: var(--primary-color);
+    margin-top: 0;
+}
+
+.subtitle {
+    color: #8898aa;
+    margin-bottom: 2rem;
+}
+
+.date-picker {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.date-input {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #4a5cc0;
+}
+
+.result-box {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #f8f9fe;
+    border-radius: 5px;
+    border: 1px dashed #dee2e6;
+    min-height: 50px;
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.result-box strong {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+footer {
+    margin-top: 2rem;
+    color: #8898aa;
+    font-size: 0.9rem;
+}

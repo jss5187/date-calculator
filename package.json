@@ -1,0 +1,19 @@
+{
+  "name": "date-calculator",
+  "version": "1.0.0",
+  "description": "두 날짜 사이의 일수를 계산하는 간단한 웹 애플리케이션",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -s . -p 3000",
+    "dev": "npx http-server -p 8080 -o",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "date-calculator",
+    "javascript",
+    "html",
+    "css"
+  ],
+  "author": "",
+  "license": "MIT"
+}
